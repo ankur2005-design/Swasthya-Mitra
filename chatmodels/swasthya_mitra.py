@@ -21,7 +21,7 @@ def download_faiss():
   if not os.path.exists("chatmodels/faiss_index"):
     print("Downloading FAISS...")
 
-    url = "https://drive.google.com/uc?id=1FBUGEjO84z4TQ-yJv19QgGqfEAvhS-T9"
+    url = "https://drive.google.com/uc?id=1dwy93B2ubZuGJ5TX-qigkrTWeHTL_0Ib"
     output = "faiss_index.zip"
 
     gdown.download(url, output, quiet=False)
