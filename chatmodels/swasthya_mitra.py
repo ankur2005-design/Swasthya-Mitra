@@ -14,7 +14,7 @@ llm = ChatGroq(
 )
 
 def load_texts():
-  df = pd.read_csv("health_dataset.csv", encoding="latin-1", on_bad_lines="skip")
+  df = pd.read_csv("chatmodels/health_dataset.csv", encoding="latin-1", on_bad_lines="skip")
   texts = df.astype(str).apply(lambda row: " | ".join(row), axis=1).tolist()
   return texts
 
@@ -43,14 +43,14 @@ def initialize_vector_db():
   model_name="sentence-transformers/all-MiniLM-L6-v2"
   )
 
-  if os.path.exists("faiss_index"):
+  if os.path.exists("chatmodels/faiss_index"):
     print("Loading existing FAISS index...")
-    vector_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+    vector_db = FAISS.load_local("chatmodels/faiss_index", embeddings, allow_dangerous_deserialization=True)
   else:
     print("Creating new FAISS index...")
     texts = load_texts()
     vector_db = create_vector_db(texts)
-    vector_db.save_local("faiss_index")
+    vector_db.save_local("chatmodels/faiss_index")
 
 def retrieve(query):
   if vector_db is None:
