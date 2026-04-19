@@ -8,7 +8,6 @@ from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain_community.vectorstores import FAISS
-from langchain_huggingface import HuggingFaceEmbeddings
 
 llm = ChatGroq(
   model="llama-3.3-70b-versatile",
@@ -36,13 +35,10 @@ def initialize_vector_db():
   global vector_db
 
   download_faiss()
-
-  embeddings = HuggingFaceEmbeddings(
-  model_name="sentence-transformers/all-MiniLM-L6-v2"
-  )
   
-  vector_db = FAISS.load_local("chatmodels/faiss_index", 
-   embeddings, 
+  vector_db = FAISS.load_local(
+   "chatmodels/faiss_index", 
+   embeddings = None,
    allow_dangerous_deserialization=True)
 
 def retrieve(query):
