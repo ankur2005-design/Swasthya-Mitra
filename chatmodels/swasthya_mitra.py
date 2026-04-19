@@ -24,7 +24,7 @@ def download_faiss():
     url = "https://drive.google.com/uc?id=1FBUGEjO84z4TQ-yJv19QgGqfEAvhS-T9"
     output = "faiss_index.zip"
 
-    gdown.download(url, output, quiet=False, fuzzy=True)
+    gdown.download(url, output, quiet=False)
 
     print("Extracting...")
     with zipfile.ZipFile(output, 'r') as zip_ref:
