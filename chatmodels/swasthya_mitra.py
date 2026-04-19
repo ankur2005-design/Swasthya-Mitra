@@ -1,5 +1,7 @@
 from dotenv import load_dotenv
 import os
+import zipfile
+import gdown
 load_dotenv()
 import pandas as pd
 from langchain_groq import ChatGroq
@@ -13,44 +15,35 @@ llm = ChatGroq(
   api_key=os.getenv("GROQ_API_KEY")
 )
 
-def load_texts():
-  df = pd.read_csv("chatmodels/health_dataset.csv", encoding="latin-1", on_bad_lines="skip")
-  texts = df.astype(str).apply(lambda row: " | ".join(row), axis=1).tolist()
-  return texts
+vector_db = None
 
-def create_vector_db(texts):
-  embedding = HuggingFaceEmbeddings(
-  model_name="sentence-transformers/all-MiniLM-L6-v2"
-  )
-  
-  batch_size = 5000
-  db = None
+def download_faiss():
+  if not os.path.exists("chatmodels/faiss_index"):
+    print("Downloading FAISS...")
 
-  for i in range(0 , len(texts) , batch_size):
-    batch = texts[i:i+batch_size]
+    url = "https://drive.google.com/uc?id=1FBUGEjO84z4TQ-yJv19QgGqfEAvhS-T9"
+    output = "faiss_index.zip"
 
-    if db is None:
-      db = FAISS.from_texts(batch , embedding)
-    else:
-      db.add_texts(batch)
+    gdown.download(url, output, quiet=False, fuzzy=True)
 
-  return db
+    print("Extracting...")
+    with zipfile.ZipFile(output, 'r') as zip_ref:
+      zip_ref.extractall("chatmodels/")
+
+    print("Ready!")
 
 def initialize_vector_db():
   global vector_db
 
+  download_faiss()
+
   embeddings = HuggingFaceEmbeddings(
   model_name="sentence-transformers/all-MiniLM-L6-v2"
   )
-
-  if os.path.exists("chatmodels/faiss_index"):
-    print("Loading existing FAISS index...")
-    vector_db = FAISS.load_local("chatmodels/faiss_index", embeddings, allow_dangerous_deserialization=True)
-  else:
-    print("Creating new FAISS index...")
-    texts = load_texts()
-    vector_db = create_vector_db(texts)
-    vector_db.save_local("chatmodels/faiss_index")
+  
+  vector_db = FAISS.load_local("chatmodels/faiss_index", 
+   embeddings, 
+   allow_dangerous_deserialization=True)
 
 def retrieve(query):
   if vector_db is None:

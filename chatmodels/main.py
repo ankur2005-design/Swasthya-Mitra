@@ -1,7 +1,12 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
-from swasthya_mitra import get_ai_response , get_sensor_response , reset_chat_history , initialize_vector_db
+from chatmodels.swasthya_mitra import (
+    get_ai_response,
+    get_sensor_response,
+    reset_chat_history,
+    initialize_vector_db
+)
 
 app = FastAPI()
 

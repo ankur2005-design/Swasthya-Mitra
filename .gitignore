@@ -1,2 +1,8 @@
 .venv/
 .env
+__pycache__/
+*.pyc
+
+chatmodels/faiss_index/
+chatmodels/faiss_index.zip
+chatmodels/health_dataset.csv

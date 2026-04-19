@@ -1,5 +1,2 @@
 __pycache__/
 *.pyc
-faiss_index/
-app.py
-health_dataset.csv
